@@ -14,10 +14,10 @@ ARG ANGULAR_VERSION=latest
 RUN npm install -g @angular/cli:${ANGULAR_VERSION}
 
 # Working directory argument.
-ARG WORKINGDIRECTORY='app'
+ARG WORKING_DIRECTORY='app'
 
 # Use 'node' user.
 USER node
 
 # Set working directory.
-WORKDIR ${app}
+WORKDIR ${WORKING_DIRECTORY}

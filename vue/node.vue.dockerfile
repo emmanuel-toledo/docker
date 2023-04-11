@@ -14,10 +14,10 @@ ARG VUE_VERSION=latest
 RUN npm install -g @vue/cli:${VUE_VERSION}
 
 # Working directory argument.
-ARG WORKINGDIRECTORY='app'
+ARG WORKING_DIRECTORY='app'
 
 # Use 'node' user.
 USER node
 
 # Set working directory.
-WORKDIR ${app}
+WORKDIR ${WORKING_DIRECTORY}
