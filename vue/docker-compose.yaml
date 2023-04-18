@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  
+  # Angular utility container
+  node-angular:
+    container_name: node-vue-container
+    image: node-vue:latest
+    build: 
+      context: ./
+      dockerfile: node.vue.dockerfile
+      args:
+        - VUE_VERSION=latest
+        - WORKING_DIRECTORY=/home/node
+    volumes:
+      - ./vue.app:/home/node
