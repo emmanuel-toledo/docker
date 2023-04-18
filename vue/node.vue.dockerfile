@@ -16,5 +16,8 @@ RUN npm install -g @vue/cli@${VUE_VERSION}
 # Set node user.
 USER node
 
+# Working directory argument.
+ARG WORKING_DIRECTORY=/home/node
+
 # Set working directory.
-WORKDIR /home/node
+WORKDIR ${WORKING_DIRECTORY}
