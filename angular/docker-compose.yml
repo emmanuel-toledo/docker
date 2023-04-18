@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  
+  # Angular utility container
+  node-angular:
+    container_name: node-angular-container
+    image: node-angular:latest
+    build: 
+      context: ./
+      dockerfile: node.angular.dockerfile
+      args:
+        - ANGULAR_VERSION=latest
+        - WORKING_DIRECTORY=/home/node
+    volumes:
+      - ./angular.app:/home/node
+
+  # Angular app container
+  app-angular:
+    container_name: app-angular-container
+    build: 
+      context: ./
+      dockerfile: docker/angular/app.dockerfile
+      args:
+        - WORKING_DIRECTORY=/home/node
+        - PROJECTNAME=angular.app
+    ports:
+      - '80:4200'
+    volumes:
+      - ./angular.app:/home/node
+      - angular-node-modules:/home/node # - /var/www/html/node_modules # Anonymous volume for production environment.
+
+volumes:
+  angular-node-modules:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: "${PWD}/angular.app/node_modules"
