@@ -4,6 +4,8 @@ services:
   angular: # Angular container as utility container.
     image: angular
     build: 
+      context: ./
+      dockerfile: angular.dockerfile
       args:
         - ANGULAR_VERSION=latest
         - WORKING_DIRECTORY=/home/node
@@ -23,18 +25,30 @@ services:
         - PROJECTNAME=angular.app
     ports:
       - '80:4200'
-    volumes:
-      - ./angular.app:/home/node:rw
+    # volumes:
+      # - ./angular.app:/home/node:rw
 
 #############################################
 ## UTILITY CONTAINER COMMANDS
 #############################################
 
-# TO CREATE IN SAME FOLDER ROUTE YOU CAN USE:
+# IF YOU WANT TO CREATE A NEW PROKECT REMEMBER THAT YOU WILL NEED CREATE YOURSELF THE PROJECT DIRECTORY (IN THIS CASE "angular.app" FOLDER). THIS IS FOR GRANT PERMISSIONS ONLY TO LOCAL USER FROM DOCKER. YOU CAN DO THIS FOR DEVELOPMENT ENVIRONMENT ONLY, IT IS NOT NECCESARY FOR PRODUCTION.
+# ANOTHER ALTERNATIVE WILL BE CHAGE YOUR IMAGE DOCKERFILE CONFIGURATION TO USE "root" USER.
+
+# MAKE SURE THAT YOU ALREADY BUILD ANGULAR IMAGE USING "angular.dockerfle" (IF YOU DID THIS YOU DON'T NEED "CONTEXT" AND "DOCKERFILE" CONFIGURATION IN "angular" SERVICE).
+# OR YOU CAN EXECUTE "docker compose" COMMAND USING "--build" FLAG.
+# docker compose -f ./angular.docker-compose.yaml run --rm -it --build angular ng new angular.app
+
+# TO CREATE A FOLDER FOR THE NEW PROJECT YOU CAN USE:
 # docker compose -f ./angular.docker-compose.yaml run --rm -it angular ng new angular.app
 
-# TO CREATE IN ANOTHER FOLDER ROUTE YOU CAN USE:
+# TO CREATE A PROJECT INSIDE AN EXISTENCE FOLDER YOU CAN USE:
 # docker compose -f ./angular.docker-compose.yaml run --rm -it angular ng new angular.app --directory ./
+
+# IF YOU ADD A NEW DIRECTORY AFTER "./" WILL BE CREATE AUTOMATICALLY THE NEW SUB FOLDER.
+# docker compose -f ./angular.docker-compose.yaml run --rm -it angular ng new angular.app --directory ./subforlder
+
+# THE LAST TWO COMMANDS WILL PUT THE PROJECT INSIDE "angular.app" FOLDER BECAUSE IT IS DEFINED INSIDE THIS DOCKER COMPOSE FILE FOR "angular" SERVICE.
 
 # TO ADD A NEW ELEMENT INSIDE AN ANGULAR APP USING ANGULAR CLI:
 # docker compose -f ./angular.docker-compose.yaml run --rm -it angular ng generate module modules/shared
@@ -61,3 +75,11 @@ services:
 
 # TO BE SURE THAT YOUR IMAGE IS UPDATED THEN USE:
 # docker compose -f ./angular.docker-compose.yaml up --build app
+
+# TO BE SURE THAT YOUR DOCKER COMPOSE IS COMPLETLY DOWN AND CLEAN, YOU CAN RUN
+# docker compose -f ./angular.docker-compose.yaml down -v
+
+
+
+#### INVESTIGAR SOBRE BIND MOUNT DE DOCKER HACIA MÁQUINA LOCAL, SI ELIMINA node_modules Y TRATA DE EJECUTAR SERVCIO "app", EL 
+#### VOLUME DEFINIDO REMUEVE "node_modules" QUE SE ENCUENTRA EN DOCKER.
