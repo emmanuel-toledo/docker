@@ -1,0 +1,63 @@
+version: '3.8'
+services:
+  
+  angular: # Angular container as utility container.
+    image: angular
+    build: 
+      args:
+        - ANGULAR_VERSION=latest
+        - WORKING_DIRECTORY=/home/node
+    ports:
+      - 80:4200
+    volumes:
+      - ./angular.app:/home/node:rw
+
+  app: # Angular container as startup project.
+    image: angular-app
+    build: 
+      context: ./
+      dockerfile: angular.app.dockerfile
+      args:
+        - ANGULAR_VERSION=latest
+        - WORKING_DIRECTORY=/home/node
+        - PROJECTNAME=angular.app
+    ports:
+      - '80:4200'
+    volumes:
+      - ./angular.app:/home/node:rw
+
+#############################################
+## UTILITY CONTAINER COMMANDS
+#############################################
+
+# TO CREATE IN SAME FOLDER ROUTE YOU CAN USE:
+# docker compose -f ./angular.docker-compose.yaml run --rm -it angular ng new angular.app
+
+# TO CREATE IN ANOTHER FOLDER ROUTE YOU CAN USE:
+# docker compose -f ./angular.docker-compose.yaml run --rm -it angular ng new angular.app --directory ./
+
+# TO ADD A NEW ELEMENT INSIDE AN ANGULAR APP USING ANGULAR CLI:
+# docker compose -f ./angular.docker-compose.yaml run --rm -it angular ng generate module modules/shared
+# docker compose -f ./angular.docker-compose.yaml run --rm -it angular ng generate component modules/shared/components/header
+# docker compose -f ./angular.docker-compose.yaml run --rm -it angular ng generate component modules/shared/components/card --skip-tests --style none
+
+# IF YOUR UTILITY CONTAINER DOES NOT STOP YOU CAN TRY:
+# docker stop {CONTAINER_ID}
+
+# AND THEN FOR SURE THE COMPOSE IS DOWN YOU CAN TRY:
+# docker compose -f ./angular.docker-compose.yaml down -v
+
+# IF YOU WANT YOU CAN EXECUTE "NPM" COMMANDS LIKE "NPM INSTALL":
+# docker compose -f ./angular.docker-compose.yaml run --rm -it angular npm install
+
+# REMEMBER THAT ALL THESE COMMANDS WORKS BECAUSE WE DEFINE BEFORE A BIND MOUNT (VOLUME).
+
+#############################################
+## APP CONTAINER COMMANDS
+#############################################
+
+# TO RUN YOUR ANGULAR APPLICATION YOU CAN USE:
+# docker compose -f ./angular.docker-compose.yaml up app
+
+# TO BE SURE THAT YOUR IMAGE IS UPDATED THEN USE:
+# docker compose -f ./angular.docker-compose.yaml up --build app
