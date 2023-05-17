@@ -3,3 +3,4 @@ node_modules
 .dockerignore
 .npm
 .angular-config.json
+.angular
